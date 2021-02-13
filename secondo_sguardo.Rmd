@@ -1,0 +1,333 @@
+---
+title: "Un secondo sguardo"
+author: "Tavaris Denis - 142438"
+date: "17/02/2021"
+output: ioslides_presentation
+---
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+#caricamento delle librerie
+library(dplyr)
+library(tidyverse)
+library(tidytext)
+library(stringr)
+library(topicmodels)
+library(scales)
+library(ggmap)
+library(ggrepel)
+library(forcats)
+library(scales)
+library(textdata)
+library(installr)
+library(SnowballC)
+
+c1984 <- read.delim2("c1984.txt",header = TRUE,stringsAsFactors = FALSE)
+nc1984 <- c1984 %>% mutate(Book = "1984")
+names(nc1984)[1] <- "Text"
+tidy_1984 <- c1984 %>%
+  mutate(linenumber = row_number(), Book = "1984") %>%
+  unnest_tokens(word, X1984) %>%
+  anti_join(stop_words, by = "word")
+
+dracula <- read.delim2("dracula.txt",header = TRUE,stringsAsFactors = FALSE)
+ndracula <- dracula %>% mutate(Book = "Dracula")
+names(ndracula)[1] <- "Text"
+tidy_dracula <- dracula %>%
+  mutate(linenumber = row_number(), Book = "Dracula") %>%
+  unnest_tokens(word, Dracula) %>%
+  anti_join(stop_words, by = "word")
+
+frankenstein <- read.delim2("frankenstein.txt",header = TRUE,stringsAsFactors = FALSE)
+nfrankenstein <- frankenstein %>% mutate(Book = "Frankenstein")
+names(nfrankenstein)[1] <- "Text"
+tidy_frankenstein <- frankenstein %>%
+  mutate(linenumber = row_number(), Book = "Frankenstein") %>%
+  unnest_tokens(word, Frankenstein) %>%
+  anti_join(stop_words, by = "word")
+
+the_great_gatsby <- read.delim2("the-great-gatsby.txt",header = TRUE,stringsAsFactors = FALSE)
+nthe_great_gatsby <- the_great_gatsby %>% mutate(Book = "the-great-gatsby")
+names(nthe_great_gatsby)[1] <- "Text"
+tidy_the_great_gatsby <- the_great_gatsby %>%
+  mutate(linenumber = row_number(), Book = "the-great-gatsby") %>%
+  unnest_tokens(word, The.Great.Gatsby) %>%
+  anti_join(stop_words, by = "word")
+
+the_iliad <- read.delim2("the-iliad.txt",header = TRUE,stringsAsFactors = FALSE)
+nthe_iliad <- the_iliad %>% mutate(Book = "the-iliad")
+names(nthe_iliad)[1] <- "Text"
+tidy_the_iliad <- the_iliad %>%
+  mutate(linenumber = row_number(), Book = "the-iliad") %>%
+  unnest_tokens(word, The.Iliad) %>%
+  anti_join(stop_words, by = "word")
+
+mohicans <- read.delim2("the-last-of-the-mohicans.txt",header = TRUE,stringsAsFactors = FALSE)
+nmohicans <- mohicans %>% mutate(Book = "the-last-of-the-mohicans")
+names(nmohicans)[1] <- "Text"
+tidy_mohicans <- mohicans %>%
+  mutate(linenumber = row_number(), Book = "the-last-of-the-mohicans") %>%
+  unnest_tokens(word, The.Last.of.the.Mohicans) %>%
+  anti_join(stop_words, by = "word")
+
+metamorphosis <- read.delim2("the-metamorphosis.txt",header = TRUE,stringsAsFactors = FALSE)
+nmetamorphosis <- metamorphosis %>% mutate(Book = "metamorphosis")
+names(nmetamorphosis)[1] <- "Text"
+tidy_metamorphosis <- metamorphosis %>%
+  mutate(linenumber = row_number(), Book = "metamorphosis") %>%
+  unnest_tokens(word, The.Metamorphosis) %>%
+  anti_join(stop_words, by = "word")
+
+the_odyssey <- read.delim2("the-odyssey.txt",header = TRUE,stringsAsFactors = FALSE)
+nthe_odyssey <- the_odyssey %>% mutate(Book = "the-odyssey")
+names(nthe_odyssey)[1] <- "Text"
+tidy_the_odyssey <- the_odyssey %>%
+  mutate(linenumber = row_number(), Book = "the-odyssey") %>%
+  unnest_tokens(word, The.Odyssey) %>%
+  anti_join(stop_words, by = "word")
+
+dorian_gray <- read.delim2("the-picture-of-dorian-gray.txt",header = TRUE,stringsAsFactors = FALSE)
+ndorian_gray <- dorian_gray %>% mutate(Book = "the-picture-of-dorian-gray")
+names(ndorian_gray)[1] <- "Text"
+tidy_dorian_gray <- dorian_gray %>%
+  mutate(linenumber = row_number(), Book = "the-picture-of-dorian-gray") %>%
+  unnest_tokens(word, The.Picture.of) %>%
+  anti_join(stop_words, by = "word")
+
+the_three_musketeers <- read.delim2("the-three-musketeers.txt",header = TRUE,stringsAsFactors = FALSE)
+nthe_three_musketeers <- the_three_musketeers %>% mutate(Book = "the-three-musketeers")
+names(nthe_three_musketeers)[1] <- "Text"
+tidy_the_three_musketeers <- the_three_musketeers %>%
+  mutate(linenumber = row_number(), Book = "the-three-musketeers") %>%
+  unnest_tokens(word, The.Three.Musketeers) %>%
+  anti_join(stop_words, by = "word")
+
+treasure_island <- read.delim2("treasure-island.txt",header = TRUE,stringsAsFactors = FALSE)
+ntreasure_island <- treasure_island %>% mutate(Book = "treasure-island")
+names(ntreasure_island)[1] <- "Text"
+tidy_treasure_island <- treasure_island %>%
+  mutate(linenumber = row_number(), Book = "treasure-island") %>%
+  unnest_tokens(word, Treasure.Island) %>%
+  anti_join(stop_words, by = "word")
+
+
+book <- full_join(full_join(full_join(full_join(full_join(full_join(full_join(full_join(full_join(full_join(tidy_1984, tidy_dracula), tidy_frankenstein), tidy_the_great_gatsby), tidy_the_iliad), tidy_mohicans), tidy_metamorphosis), tidy_the_odyssey), tidy_dorian_gray), tidy_the_three_musketeers), tidy_treasure_island)
+
+nbook <- full_join(full_join(full_join(full_join(full_join(full_join(full_join(full_join(full_join(full_join(nc1984, ndracula), nfrankenstein), nthe_great_gatsby), nthe_iliad), nmohicans), nmetamorphosis), nthe_odyssey), ndorian_gray), nthe_three_musketeers), ntreasure_island)
+```
+
+## Perchè questa analisi
+
+I libri delle superiori? Ma torniamo indietro?
+
+In realtà c'è molto più di quello che ci si aspetti...
+
+- Le storie si somigliano?
+- I personaggi hanno gli stessi comportamenti?
+- Possiamo definirla psicanalisi?
+- Che impatto hanno sulla mente umana?
+
+
+## Le parole più usate nel totale
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+book_stemmed <- book %>%
+  mutate(word = wordStem(word))
+
+book_stemmed %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 1000, word != "free", word != "eBooks", word!= "ebook", word!="planet", word!="â") %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()
+```
+
+## Le parole in base ai sentimenti
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+book %>%
+  count(word) %>%
+  inner_join(get_sentiments("nrc"), by = "word") %>%
+  group_by(sentiment) %>%
+  top_n(5, n) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ sentiment, scales = "free") +
+  labs(y = "Contribution for each sentiment sentiment", x = NULL)
+```
+
+## Ma questi libri sono principalmente positivi o negativi?
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+book %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(Book, index = linenumber %/% 20, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative) %>%
+  ggplot(aes(index, sentiment, fill = Book)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Book, ncol = 5, scales = "free_x")
+```
+
+## Parole positive e negative più significative
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+#
+book %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup() %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  filter(word != "free") %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment", x = NULL) +
+  coord_flip() +
+  scale_fill_brewer(palette = "Dark2")
+```
+
+## Un po' di percentuali
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+wordcounts <- book %>%
+  group_by(Book) %>%
+  summarize(words = n()) %>%
+  ungroup()
+
+#Percentuale di negatività
+most_negative_book <- book %>%
+  semi_join(filter(get_sentiments("bing"), sentiment == "negative")) %>%
+  group_by(Book) %>%
+  summarize(sentimentalwords = n()) %>%
+  left_join(wordcounts, by = c("Book")) %>%
+  mutate(sentiment = "NEGATIVE", percentage = round(sentimentalwords/words*100)) %>%
+  ungroup() %>%
+  group_by(Book) %>% 
+  top_n(1, percentage) %>%
+  ungroup()
+
+#Percentuale di positività
+most_positive_book <- book %>%
+  semi_join(filter(get_sentiments("bing"), sentiment == "positive")) %>%
+  group_by(Book) %>%
+  summarize(sentimentalwords = n()) %>%
+  left_join(wordcounts, by = c("Book")) %>%
+  mutate(sentiment = "POSITIVE", percentage = round(sentimentalwords/words*100)) %>%
+  ungroup() %>%
+  group_by(Book) %>% 
+  top_n(1, percentage) %>%
+  ungroup()
+
+positive_and_negative_book <- full_join(most_negative_book, most_positive_book) %>%
+  select(Book, sentiment, percentage)
+
+#Percentuale di neutralità
+most_neutral_book <- positive_and_negative_book %>%
+  group_by(Book) %>%
+  summarise(total=sum(percentage)) %>%
+  mutate(sentiment="NEUTRAL", percentage=100-total) %>%
+  select(-total)
+
+blank_theme <- theme_minimal()+
+  theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.border = element_blank(),
+  panel.grid=element_blank(),
+  axis.ticks = element_blank(),
+  plot.title=element_text(size=14, face="bold")
+  )
+  
+full_join(positive_and_negative_book, most_neutral_book) %>%
+  arrange(Book) %>%
+  ggplot(aes(x="", y=percentage, fill=sentiment)) +
+  geom_bar(width = 1, stat = "identity") +
+  facet_wrap(~Book) +
+  coord_polar("y", start=0) + 
+  scale_fill_brewer(palette="GnBu") + 
+  blank_theme +
+  theme(axis.text.x=element_blank())+
+  geom_label_repel(aes(label = percentage), size=5, show.legend = F, position = position_stack(vjust = 0.5))
+
+```
+
+## Uso delle parole delle varie storie
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+#
+book_words <- nbook %>%
+  unnest_tokens(word, Text) %>%
+  count(Book, word, sort = TRUE) %>%
+  ungroup() %>%
+  anti_join(stop_words)
+
+total_words <- book_words %>% 
+  group_by(Book) %>% 
+  summarize(total = sum(n))
+
+left_join(book_words, total_words) %>%
+  ggplot(aes(n / total, fill = Book)) +
+  geom_histogram(show.legend = FALSE) +
+  facet_wrap(~Book, ncol = 3, scales = "free_y")
+```
+
+## Legge di Zipf
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+book_words %>% 
+  group_by(Book) %>% 
+  mutate(rango = row_number(), `frequenza delle parole` = n/rango) %>% 
+  ggplot(aes(rango, `frequenza delle parole`, group = Book, color = Book)) + 
+  geom_line(size = 1.2, alpha = 0.7, show.legend = TRUE) + 
+  scale_x_log10() +
+  scale_y_log10()
+```
+
+## TF-IDF
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+#
+book_words %>%
+  bind_tf_idf(word, Book, n) %>%
+  arrange(desc(tf_idf)) %>%
+  group_by(Book) %>% 
+  top_n(10, tf_idf) %>% 
+  ungroup %>%
+  mutate(word = reorder(word, tf_idf)) %>%
+  ggplot(aes(word, tf_idf, fill = Book)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~Book, ncol = 4, scales = "free") +
+  coord_flip()
+```
+
+## Ma le categorie?
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+#
+#creazione di sei argomenti con LDA
+book_lda <- book %>%
+  count(Book, word, sort = TRUE) %>%
+  ungroup() %>%
+  cast_dtm(Book, word, n) %>% 
+  LDA(k = 5, control = list(seed = 1234))
+
+#Assegnazione degli argomenti a tutte le storie e selezione del solo argomento predominante
+tidy(book_lda, matrix = "gamma") %>%
+  group_by(document) %>%
+  top_n(1, gamma) %>%
+  ungroup() %>%
+  arrange(topic) %>%
+  ggplot(aes(x="", y=gamma, fill=document)) +
+  geom_bar(width = 1, stat = "identity", show.legend = TRUE, colour="black") +
+  facet_wrap(~topic, ncol = 3) +
+  scale_fill_hue(l=40)
+```
